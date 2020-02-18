@@ -1,5 +1,5 @@
 const express = require('express');
-const routes = express.Router();
+const router = express.Router();
 const bcrypt = require('bcryptjs');
 const auth = require('../../middleware/auth');
 const jwt = require('jsonwebtoken');
@@ -11,7 +11,7 @@ const User = require('../../models/User');
 // @desc     Test route
 // @access   Public
 
-routes.get('/', auth, async (req, res, next) => {
+router.get('/', auth, async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     res.json(user);
@@ -25,7 +25,7 @@ routes.get('/', auth, async (req, res, next) => {
 // @desc     Authenticate user & get token
 // @access   Public
 
-routes.post(
+router.post(
   '/',
   [
     check('email', 'Please include valid email').isEmail(),
@@ -81,4 +81,4 @@ routes.post(
   }
 );
 
-module.exports = routes;
+module.exports = router;

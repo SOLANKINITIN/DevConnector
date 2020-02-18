@@ -1,5 +1,5 @@
 const express = require('express');
-const routes = express.Router();
+const router = express.Router();
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -12,7 +12,7 @@ const User = require('../../models/User');
 // @desc     Register user
 // @access   Public
 
-routes.post(
+router.post(
   '/',
   [
     check('name', 'Name is reqiured')
@@ -31,8 +31,9 @@ routes.post(
     }
     // console.log(req.body)  ;
 
-    const { name, email, password } = req.body;
     // See if user exits
+
+    const { name, email, password } = req.body;
     try {
       let user = await User.findOne({ email });
 
@@ -69,8 +70,8 @@ routes.post(
       };
 
       jwt.sign(
-        payload,
         config.get('jwtSecret'),
+        payload,
         { expiresIn: 360000 },
         (err, token) => {
           if (err) throw err;
@@ -85,4 +86,4 @@ routes.post(
   }
 );
 
-module.exports = routes;
+module.exports = router;
