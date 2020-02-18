@@ -42,7 +42,7 @@ routes.post(
           .json({ errors: [{ msg: 'user is a alredy exits' }] });
       }
       //Get user gravatar
-      const avater = gravatar.url(email, {
+      const avatar = gravatar.url(email, {
         s: '200',
         r: 'pg',
         d: 'mm'
