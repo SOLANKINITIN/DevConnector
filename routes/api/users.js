@@ -15,13 +15,11 @@ const User = require('../../models/User');
 router.post(
   '/',
   [
-    check('name', 'Name is reqiured')
-      .not()
-      .isEmpty(),
+    check('name', 'Name is reqiured').not().isEmpty(),
     check('email', 'Please include valid email').isEmail(),
     check('password', 'Please reqiured password with 6 or more').isLength({
-      min: 6
-    })
+      min: 6,
+    }),
   ],
   async (req, res, next) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
@@ -29,7 +27,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    // console.log(req.body)  ;
+    // console.log(req.body);
 
     // See if user exits
 
@@ -46,13 +44,13 @@ router.post(
       const avatar = gravatar.url(email, {
         s: '200',
         r: 'pg',
-        d: 'mm'
+        d: 'mm',
       });
       user = new User({
         name,
         email,
-        gravatar,
-        password
+        avatar,
+        password,
       });
 
       //Encrypt password
@@ -61,17 +59,18 @@ router.post(
       user.password = await bcrypt.hash(password, salt);
 
       await user.save();
+      // res.send('Users Register');
 
       //return jsonwebtoken
       const payload = {
         user: {
-          id: user.id
-        }
+          id: user.id,
+        },
       };
 
       jwt.sign(
-        config.get('jwtSecret'),
         payload,
+        config.get('jwtSecret'),
         { expiresIn: 360000 },
         (err, token) => {
           if (err) throw err;
@@ -79,10 +78,9 @@ router.post(
         }
       );
     } catch (err) {
+      console.log(err.message);
       return res.status(500).send('Server error');
     }
-
-    // res.send('Users Register');
   }
 );
 
