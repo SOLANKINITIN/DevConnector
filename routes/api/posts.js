@@ -153,7 +153,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
     try {
-      const user = await User.findById(req.user.id).select('-password');
+      const user = User.findById(req.user.id).select('-password');
       const post = await Post.findById(req.params.id);
       const newComment = {
         text: req.body.text,
